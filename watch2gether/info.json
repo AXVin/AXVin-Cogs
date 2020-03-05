@@ -1,0 +1,10 @@
+{
+    "author" : ["AXVin (AXVin#2130)"],
+    "install_msg" : "Thank you for installing watch2gether. Make sure to set the api key with `[p]watch2gether api <api_key>`",
+    "name" : "Watch2Gether",
+    "short" : "Watch2Gether rooms",
+    "description" : "Create Watch2Gether rooms for your server members to enjoy. Each room lasts for 12 hours in the database and is then removed from it!",
+    "permissions" : ["Manage Messages", "Embed Links", "Add Reactions"],
+    "tags" : ["Watch2Gether", "Rabbit", "rooms"],
+    "min_python_version": [3, 6, 0]
+}
