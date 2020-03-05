@@ -1,8 +1,3 @@
-"""
-This Cog was commissioned for ionite#7700 through a bounty on CogBoard
-
-"""
-
 # stdlib
 from datetime import datetime
 
