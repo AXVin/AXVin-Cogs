@@ -102,7 +102,6 @@ class Watch2Gether(BaseCog):
                     await self.bot.wait_for("reaction_add", check=pred, timeout=60.0)
                 except asyncio.exceptions.TimeoutError:
                     await message.clear_reactions()
-                    return await ctx.send("Request Timed out!")
                 else:
                     if pred.result == 1:
                         return await message.delete()
