@@ -141,7 +141,7 @@ class Watch2Gether(BaseCog):
         Set the time after which a room will expire(removed from the currently running rooms)
         Set to 0 to disable
         """
-        await self.db.guild(ctx.guild).expires().set(seconds)
+        await self.db.guild(ctx.guild).expires.set(seconds)
         await ctx.send(f"Done! Set expiry time to {seconds:,d} seconds")
 
 
