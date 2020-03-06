@@ -100,7 +100,14 @@ class Watch2Gether(BaseCog):
             jsondata = await resp.json()
 
         room_key = jsondata["streamkey"]
-        room_url = f"https://www.watch2gether.com/rooms/{stream_key}"
+        room_url = f"https://www.watch2gether.com/rooms/{room_key}"
+        async with self.db.guild(ctx.guild).rooms() as rooms:
+            rooms.append({
+                "room_key": room_key,
+                "room_url": room_url,
+                "message_id": ctx.message.id,
+                "author_id": ctx.author.id
+            })
 
         await ctx.send(f"New Watch2Gether room created! You can access it through this "
                        "link: {stream_url}")
