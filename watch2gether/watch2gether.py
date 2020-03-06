@@ -14,7 +14,8 @@ from redbot.core import Config, commands
 from redbot.core.utils.predicates import ReactionPredicate
 from redbot.core.utils.menus import start_adding_reactions
 
-
+# Current Plugin
+from .time import human_timedelta
 
 # log = logging.getLogger("red.watch2gether")
 
@@ -81,7 +82,8 @@ class Watch2Gether(BaseCog):
                         rooms.remove(room)
                         running_rooms.remove(room)
                 else:
-                    string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>)"
+                    time_delta = human_timedelta(created_at)
+                    string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>, {time_delta})"
                     i = i + 1
                     room_strs.append(string)
             if room_strs:
