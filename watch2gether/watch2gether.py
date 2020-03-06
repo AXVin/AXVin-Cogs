@@ -44,7 +44,7 @@ class Watch2Gether(BaseCog):
         self.session = aiohttp.ClientSession()
 
 
-    async def cog_unload(self):
+    def cog_unload(self):
         self.session.close()
 
 
