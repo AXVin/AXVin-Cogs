@@ -16,7 +16,7 @@ from redbot.core.utils.menus import start_adding_reactions
 
 
 
-log = logging.getLogger("red.watch2gether")
+# log = logging.getLogger("red.watch2gether")
 
 __author__ = 'AXVin'
 __version__ = '1.1.0'
