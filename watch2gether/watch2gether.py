@@ -18,11 +18,12 @@ from redbot.core.utils.menus import start_adding_reactions
 log = logging.getLogger("red.watch2gether")
 
 __author__ = 'AXVin'
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 
 
 guild_defaults = {
+    "expires": 43200,
     "rooms": []
 }
 
@@ -68,7 +69,8 @@ class Watch2Gether(BaseCog):
             room_strs = []
             for room in running_rooms:
                 created_at = discord.Object(id=room["message_id"]).created_at
-                if (now - created_at).total_seconds() > 43200:  # 12 hours
+                expires = await self.db.guild(ctx.guild).expires()
+                if expires and (now - created_at).total_seconds() > expires:  # 12 hours
                     async with self.db.guild(ctx.guild).rooms() as rooms:
                         rooms.remove(room)
                         running_rooms.remove(room)
@@ -119,4 +121,24 @@ class Watch2Gether(BaseCog):
 
         await ctx.send("New Watch2Gether room created! You can access it through this "
                        f"link: {room_url}")
+
+
+    @commands.group(autohelp=True)
+    @commands.has_permissions(administrator=True)
+    async def w2gset(self, ctx):
+        """Commands to configure the Cog"""
+        pass
+
+
+    @w2gset.command()
+    @commands.has_permissions(administrator=True)
+    async def expire(self, ctx, seconds:int):
+        """
+        Set the time after which a room will expire(removed from the currently running rooms)
+        Set to 0 to disable
+        """
+        await self.db.guild(ctx.guild).expires().set(seconds)
+        await ctx.send(f"Done! Set expiry time to {seconds:,d} seconds")
+
+
 
