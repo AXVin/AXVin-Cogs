@@ -76,7 +76,7 @@ class Watch2Gether(BaseCog):
             for room in running_rooms:
                 created_at = discord.Object(id=room["message_id"]).created_at
                 expires = await self.db.guild(ctx.guild).expires()
-                if expires and (now - created_at).total_seconds() > expires:  # 12 hours
+                if expires and (now - created_at).total_seconds() > expires:
                     async with self.db.guild(ctx.guild).rooms() as rooms:
                         rooms.remove(room)
                         running_rooms.remove(room)
@@ -137,11 +137,14 @@ class Watch2Gether(BaseCog):
 
     @w2gset.command()
     @commands.has_permissions(administrator=True)
-    async def expire(self, ctx, seconds:int):
+    async def expire(self, ctx, seconds:int=None):
         """
         Set the time after which a room will expire(removed from the currently running rooms)
-        Set to 0 to disable
+        Set to 0 to disable. Run without seconds to see the current settings
         """
+        if seconds is None:
+            expires = await self.db.guild(ctx.guild).expires()
+            return await ctx.send(f"Current expiry time is {expires} seconds")
         await self.db.guild(ctx.guild).expires.set(seconds)
         await ctx.send(f"Done! Set expiry time to {seconds:,d} seconds")
 
