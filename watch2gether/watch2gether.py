@@ -5,6 +5,7 @@ from datetime import datetime
 # discord.py
 import aiohttp
 import discord
+import logging
 
 # Red-DiscordBot
 from redbot.core import Config, commands
@@ -47,7 +48,7 @@ class Watch2Gether(BaseCog):
         self.session.close()
 
 
-    @commands.commamd(aliases=["w2g"])
+    @commands.command(aliases=["w2g"])
     @commands.guild_only()
     # @commands.has_permissions(administrator=True)
     async def watch2gether(self, ctx, link=None):
