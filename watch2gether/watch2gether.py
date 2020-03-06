@@ -72,6 +72,7 @@ class Watch2Gether(BaseCog):
         if running_rooms:
             now = datetime.utcnow()
             room_strs = []
+            i = 1
             for room in running_rooms:
                 created_at = discord.Object(id=room["message_id"]).created_at
                 expires = await self.db.guild(ctx.guild).expires()
@@ -80,7 +81,8 @@ class Watch2Gether(BaseCog):
                         rooms.remove(room)
                         running_rooms.remove(room)
                 else:
-                    string = f"[Room URL]({room['room_url']}) (Created By - <@{room['author_id']}>)"
+                    string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>)"
+                    i = i + 1
                     room_strs.append(string)
             if room_strs:
                 embed_color = await ctx.embed_color()
@@ -103,7 +105,7 @@ class Watch2Gether(BaseCog):
                     return await ctx.send("Request Timed out!")
                 else:
                     if pred.result == 1:
-                        return await ctx.message.delete()
+                        return await message.delete()
 
         url = "https://www.watch2gether.com/rooms/create.json"
         data = {
