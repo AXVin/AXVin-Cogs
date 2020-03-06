@@ -109,6 +109,6 @@ class Watch2Gether(BaseCog):
                 "author_id": ctx.author.id
             })
 
-        await ctx.send(f"New Watch2Gether room created! You can access it through this "
-                       "link: {stream_url}")
+        await ctx.send("New Watch2Gether room created! You can access it through this "
+                       f"link: {room_url}")
 
