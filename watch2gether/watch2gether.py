@@ -83,7 +83,7 @@ class Watch2Gether(BaseCog):
                             rooms.remove(room)
                             running_rooms.remove(room)
                     else:
-                        time_delta = human_timedelta(created_at)
+                        time_delta = human_timedelta(created_at, accuracy=1)
                         string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>, {time_delta})"
                         i = i + 1
                         room_strs.append(string)

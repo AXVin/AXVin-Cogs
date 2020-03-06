@@ -81,6 +81,8 @@ def human_timedelta(dt, *, source=None, accuracy=3, brief=False, suffix=True):
         else:
             output.append(format(plural(elem), attr))
 
+    if len(output) == 1:
+        return "recently"
     if accuracy is not None:
         output = output[:accuracy]
 
