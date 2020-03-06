@@ -75,7 +75,7 @@ class Watch2Gether(BaseCog):
                     string = f"[Room URL]({room['room_url']}) (Created By - <@{room['author_id']}>)"
                     room_strs.append(string)
                 if room_strs:
-                    embed = discord.Embed(color=ctx.embed_color,
+                    embed = discord.Embed(color=ctx.embed_color(),
                                           title="Currently running rooms:")
                     embed.description = "\n".join(room_strs)
                     embed.set_footer(text="Click on any of the URLs above to enter the room.\n"
