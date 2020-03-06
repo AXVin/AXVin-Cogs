@@ -7,6 +7,7 @@ import asyncio
 import aiohttp
 import discord
 import logging
+from discord.ext import tasks
 
 # Red-DiscordBot
 from redbot.core import Config, commands
@@ -47,7 +48,11 @@ class Watch2Gether(BaseCog):
 
 
     def cog_unload(self):
-        self.session.close()
+        self.close_cleanup.start()
+
+    @tasks.loop(count=1)
+    async def close_cleanup(self):
+        await self.session.close()
 
 
     @commands.command(aliases=["w2g"])
