@@ -91,10 +91,12 @@ class Watch2Gether(BaseCog):
                 try:
                     await self.bot.wait_for("reaction_add", check=pred, timeout=60.0)
                 except asyncio.exceptions.TimeoutError:
-                    await message.clear_reactions()
                     return await ctx.send("Request Timed out!")
-                if pred.result == 1:
-                    return await ctx.send("Aborted!")
+                else:
+                    if pred.result == 1:
+                        return await ctx.send("Aborted!")
+                finally:
+                    await message.clear_reactions()
 
         url = "https://www.watch2gether.com/rooms/create.json"
         data = {
