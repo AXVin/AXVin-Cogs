@@ -74,23 +74,27 @@ class Watch2Gether(BaseCog):
                 else:
                     string = f"[Room URL]({room['room_url']}) (Created By - <@{room['author_id']}>)"
                     room_strs.append(string)
-                if room_strs:
-                    embed_color = await ctx.embed_color()
-                    embed = discord.Embed(color=embed_color,
-                                          title="Currently running rooms:")
-                    embed.description = "\n".join(room_strs)
-                    embed.set_footer(text="Click on any of the URLs above to enter the room.\n"
-                                          'If you want to create a new room, react with "+" on this message')
-                    message = await ctx.send(embed=embed)
+            if room_strs:
+                embed_color = await ctx.embed_color()
+                embed = discord.Embed(color=embed_color,
+                                      title="Currently running rooms:")
+                embed.description = "\n".join(room_strs)
+                embed.set_footer(text="Click on any of the URLs above to enter the room.\n"
+                                      'If you want to create a new room, react with "+" on this message')
+                message = await ctx.send(embed=embed)
                     
-                    emojis = ["\N{HEAVY PLUS SIGN}", "\N{HEAVY MULTIPLICATION X}\N{VARIATION SELECTOR-16}"]
-                    start_adding_reactions(message, emojis)
-                    pred = ReactionPredicate.with_emojis(emojis,
-                                                         message=message,
-                                                         user=ctx.author)
+                emojis = ["\N{HEAVY PLUS SIGN}", "\N{HEAVY MULTIPLICATION X}\N{VARIATION SELECTOR-16}"]
+                start_adding_reactions(message, emojis)
+                pred = ReactionPredicate.with_emojis(emojis,
+                                                     message=message,
+                                                     user=ctx.author)
+                try:
                     await self.bot.wait_for("reaction_add", check=pred, timeout=60.0)
-                    if pred.result == 1:
-                        return await ctx.send("Aborted!")
+                except asyncio.exceptions.TimeoutError:
+                    await message.clear_reactions()
+                    return await ctx.send("Request Timed out!")
+                if pred.result == 1:
+                    return await ctx.send("Aborted!")
 
         url = "https://www.watch2gether.com/rooms/create.json"
         data = {
