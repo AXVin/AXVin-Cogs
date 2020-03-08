@@ -6,5 +6,6 @@
     "description" : "Create Watch2Gether rooms for your server members to enjoy. Each room lasts for 12 hours in the database and is then removed from it!",
     "permissions" : ["Manage Messages", "Embed Links", "Add Reactions"],
     "tags" : ["Watch2Gether", "Rabbit", "rooms"],
+    "requirements" : ["python-dateutil"],
     "min_python_version": [3, 6, 0]
 }
