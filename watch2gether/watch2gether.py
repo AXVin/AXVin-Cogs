@@ -69,44 +69,45 @@ class Watch2Gether(BaseCog):
                                   f"`{ctx.prefix}set api watch2gether api_key,<api_key>` command")
         api_key = api_keys["api_key"]
 
-        running_rooms = await self.db.guild(ctx.guild).rooms()
-        if running_rooms:
-            now = datetime.utcnow()
-            room_strs = []
-            i = 1
-            for room in running_rooms:
-                created_at = discord.Object(id=room["message_id"]).created_at
-                expires = await self.db.guild(ctx.guild).expires()
-                if expires and (now - created_at).total_seconds() > expires:
-                    async with self.db.guild(ctx.guild).rooms() as rooms:
-                        rooms.remove(room)
-                        running_rooms.remove(room)
-                else:
-                    time_delta = human_timedelta(created_at)
-                    string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>, {time_delta})"
-                    i = i + 1
-                    room_strs.append(string)
-            if room_strs:
-                embed_color = await ctx.embed_color()
-                embed = discord.Embed(color=embed_color,
-                                      title="Currently running rooms:")
-                embed.description = "\n".join(room_strs)
-                embed.set_footer(text="Click on any of the URLs above to enter the room.\n"
-                                      'If you want to create a new room, react with "+" on this message')
-                message = await ctx.send(embed=embed)
+        if not link:
+            running_rooms = await self.db.guild(ctx.guild).rooms()
+            if running_rooms:
+                now = datetime.utcnow()
+                room_strs = []
+                i = 1
+                for room in running_rooms:
+                    created_at = discord.Object(id=room["message_id"]).created_at
+                    expires = await self.db.guild(ctx.guild).expires()
+                    if expires and (now - created_at).total_seconds() > expires:
+                        async with self.db.guild(ctx.guild).rooms() as rooms:
+                            rooms.remove(room)
+                            running_rooms.remove(room)
+                    else:
+                        time_delta = human_timedelta(created_at, accuracy=1)
+                        string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>, {time_delta})"
+                        i = i + 1
+                        room_strs.append(string)
+                if room_strs:
+                    embed_color = await ctx.embed_color()
+                    embed = discord.Embed(color=embed_color,
+                                          title="Currently running rooms:")
+                    embed.description = "\n".join(room_strs)
+                    embed.set_footer(text="Click on any of the URLs above to enter the room.\n"
+                                          'If you want to create a new room, react with "+" on this message')
+                    message = await ctx.send(embed=embed)
                     
-                emojis = ["\N{HEAVY PLUS SIGN}", "\N{HEAVY MULTIPLICATION X}\N{VARIATION SELECTOR-16}"]
-                start_adding_reactions(message, emojis)
-                pred = ReactionPredicate.with_emojis(emojis,
-                                                     message=message,
-                                                     user=ctx.author)
-                try:
-                    await self.bot.wait_for("reaction_add", check=pred, timeout=60.0)
-                except asyncio.exceptions.TimeoutError:
-                    return await message.clear_reactions()
-                else:
-                    if pred.result == 1:
-                        return await message.delete()
+                    emojis = ["\N{HEAVY PLUS SIGN}", "\N{HEAVY MULTIPLICATION X}\N{VARIATION SELECTOR-16}"]
+                    start_adding_reactions(message, emojis)
+                    pred = ReactionPredicate.with_emojis(emojis,
+                                                         message=message,
+                                                         user=ctx.author)
+                    try:
+                        await self.bot.wait_for("reaction_add", check=pred, timeout=60.0)
+                    except asyncio.exceptions.TimeoutError:
+                        return await message.clear_reactions()
+                    else:
+                        if pred.result == 1:
+                            return await message.delete()
 
         url = "https://www.watch2gether.com/rooms/create.json"
         data = {
@@ -126,8 +127,7 @@ class Watch2Gether(BaseCog):
                 "author_id": ctx.author.id
             })
 
-        await ctx.send("New Watch2Gether room created! You can access it through this "
-                       f"link: {room_url}")
+        await ctx.send(f"New Watch2Gether room created: {room_url}")
 
 
     @commands.group(autohelp=True)
