@@ -1,0 +1,10 @@
+{
+    "author" : ["AXVin (AXVin#2130)"],
+    "install_msg" : "Thank you for installing countdown. Do `[p]help Countdown` for more information on commands!",
+    "name" : "Countdown",
+    "short" : "Working Countdowns for your server",
+    "description" : "Create countdowns for your server members to know when an event will begin(or end). To prevent the bot from hitting ratelimits, the countdown timer message is edited only after 60 seconds!",
+    "permissions" : ["Manage Messages", "Embed Links", "Add Reactions"],
+    "tags" : ["countdown", "stopwatch", "time", "utility"],
+    "min_python_version": [3, 6, 0]
+}
