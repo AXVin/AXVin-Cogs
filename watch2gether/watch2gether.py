@@ -20,7 +20,7 @@ from .time import human_timedelta
 # log = logging.getLogger("red.watch2gether")
 
 __author__ = 'AXVin'
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 
 
@@ -69,7 +69,7 @@ class Watch2Gether(BaseCog):
                                   f"`{ctx.prefix}set api watch2gether api_key,<api_key>` command")
         api_key = api_keys["api_key"]
 
-        if not link:
+        if link is None:
             running_rooms = await self.db.guild(ctx.guild).rooms()
             if running_rooms:
                 now = datetime.utcnow()
@@ -78,15 +78,16 @@ class Watch2Gether(BaseCog):
                 for room in running_rooms:
                     created_at = discord.Object(id=room["message_id"]).created_at
                     expires = await self.db.guild(ctx.guild).expires()
-                    if expires and (now - created_at).total_seconds() > expires:
-                        async with self.db.guild(ctx.guild).rooms() as rooms:
-                            rooms.remove(room)
-                            running_rooms.remove(room)
-                    else:
-                        time_delta = human_timedelta(created_at, accuracy=1)
-                        string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>, {time_delta})"
-                        i = i + 1
-                        room_strs.append(string)
+                    if expires:
+                        if (now - created_at).total_seconds() > expires:
+                            async with self.db.guild(ctx.guild).rooms() as rooms:
+                                rooms.remove(room)
+                                running_rooms.remove(room)
+                                continue
+                    time_delta = human_timedelta(created_at, accuracy=1)
+                    string = f"[Room {i}]({room['room_url']}) (Created By - <@{room['author_id']}>, {time_delta})"
+                    i = i + 1
+                    room_strs.append(string)
                 if room_strs:
                     embed_color = await ctx.embed_color()
                     embed = discord.Embed(color=embed_color,
