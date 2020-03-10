@@ -1,5 +1,5 @@
 {
-    "author" : "AXVin (AXVin#2130)",
+    "author" : ["AXVin (AXVin#2130)"],
     "install_msg" : "Thank you for installing my repo.\nFor issues, bugs, or suggestions contact me in the cog board discord",
     "name" : "AXVin-Cogs",
     "short" : "Cogs for everyone",
