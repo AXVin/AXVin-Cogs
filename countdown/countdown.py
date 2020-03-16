@@ -17,7 +17,7 @@ from redbot.core import Config, commands, checks
 from .time import human_timedelta, UserFriendlyTime
 
 __author__ = 'AXVin'
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 
 global_defaults = {
@@ -270,7 +270,7 @@ Times are in UTC.'''
         Lower intervals also increase the accuracy of timer but imcreases CPU usage
         """
         if seconds is None:
-            seconds = await self.db.guild(ctx.guild).interval()
+            seconds = await self.db.interval()
             return await ctx.send(f"Current Interval is set to {seconds:,d} seconds!")
         seconds = max(seconds, 5)
         await self.db.interval.set(seconds)
