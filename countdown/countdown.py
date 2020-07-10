@@ -3,7 +3,6 @@
 import datetime
 import asyncio
 import traceback
-from pprint import pprint
 
 # discord.py
 import discord
