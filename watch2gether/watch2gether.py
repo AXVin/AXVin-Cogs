@@ -20,7 +20,7 @@ from .time import human_timedelta
 # log = logging.getLogger("red.watch2gether")
 
 __author__ = 'AXVin'
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 
 
@@ -76,7 +76,7 @@ class Watch2Gether(BaseCog):
                 room_strs = []
                 i = 1
                 for room in running_rooms:
-                    created_at = discord.Object(id=room["message_id"]).created_at
+                    created_at = discord.utils.snowflake_time(room["message_id"])
                     expires = await self.db.guild(ctx.guild).expires()
                     if expires:
                         if (now - created_at).total_seconds() > expires:
