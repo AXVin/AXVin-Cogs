@@ -1,0 +1,11 @@
+{
+    "author" : ["AXVin (AXVin#2130)"],
+    "install_msg" : "Thank you for installing giveaway. Do `[p]help Giveaway` for more information on commands!",
+    "name" : "Giveaway",
+    "short" : "Create highly customisable giveaways",
+    "description" : "Create giveaways for your server members to win great rewards! This cog offers role and server join restrictions along with a saveable config for extra quick giveaways!",
+    "permissions" : ["Manage Messages", "Embed Links", "Add Reactions"],
+    "tags" : ["giveaway", "raffle", "time", "utility"],
+    "requirements" : ["python-dateutil", "parsedatetime"],
+    "min_python_version": [3, 6, 0]
+}
