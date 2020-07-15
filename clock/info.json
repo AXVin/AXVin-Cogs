@@ -1,0 +1,11 @@
+{
+    "author": ["AXVin (AXVin#2130)"],
+    "name": "clock",
+    "install_msg": "Thank you for installing clock. Do `[p]help Clock` for more information on commands!",
+    "description": "Check timezones, times in specific places or Display them on Voice Channels.",
+    "short": "Display times in particular channels on voice channels",
+    "permissions" : ["Manage Channels", "Embed Links", "Add Reactions"],
+    "tags": ["time", "timezone", "clock"],
+    "requirements": ["pytz"],
+    "min_python_version": [3, 6, 0]
+}
