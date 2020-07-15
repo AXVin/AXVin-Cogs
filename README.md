@@ -2,8 +2,11 @@
 The public cogs for Red v3. Most of these cogs are from bounties that i completed
 
 ## Cogs
-* **countdown** - Live-ish updating countdown messages for your server!
-* **watch2gether** - Create Watch2Gether rooms for your server members to enjoy!
+| Cog Name | Description |
+| -------- | ----------- |
+| **giveaway** | Create giveaways for your server members to win great rewards! This cog offers role and server join restrictions along with a saveable config for extra quick giveaways! |
+| **countdown** | Live-ish updating countdown messages for your server! |
+| **watch2gether** | Create Watch2Gether rooms for your server members to enjoy! |
 
 ## Installation
 * Add repo: `[p]repo add AXVin-Cogs https://github.com/AXVin/AXVin-Cogs`
