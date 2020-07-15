@@ -152,7 +152,10 @@ class Countdown(BaseCog):
                 if channel is None:
                     continue
 
-                message = await channel.fetch_message(countdown["message_id"])
+                try:
+                    message = await channel.fetch_message(countdown["message_id"])
+                except discord.errors.NotFound:
+                    continue
                 author = channel.guild.get_member(countdown["author_id"])
 
                 self.running_countdowns.append((

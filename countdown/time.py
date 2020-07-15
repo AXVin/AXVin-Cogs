@@ -219,7 +219,7 @@ def human_timedelta(dt, *, source=None, accuracy=3, brief=False, suffix=True, ig
 
     if accuracy is not None:
         output = output[:accuracy]
-    if 'second' in output[-1] and ignore_seconds:
+    if output and 'second' in output[-1] and ignore_seconds:
         output.pop(-1)
 
     if len(output) == 0:
