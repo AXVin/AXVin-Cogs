@@ -138,6 +138,9 @@ class Giveaway:
             async with config.guild(guild).giveaways() as giveaways:
                 giveaways.append(giveaway.to_record())
 
+        # sometimes it doesn't add the reaction coz it's too new
+        # idk, just monkey patching it
+        await asyncio.sleep(0.5)
         await message.add_reaction("\N{PARTY POPPER}")
         return giveaway
 
