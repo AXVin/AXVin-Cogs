@@ -1,5 +1,5 @@
-from .countdown import Countdown
+from .countdown import CountdownCog
 
 def setup(bot):
-    cog = Countdown(bot)
+    cog = CountdownCog(bot)
     bot.add_cog(cog)

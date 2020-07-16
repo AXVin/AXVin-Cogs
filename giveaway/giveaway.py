@@ -21,10 +21,8 @@ from .time import human_timedelta, UserFriendlyTime
 from .formats import human_join
 
 __author__ = 'AXVin'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
-
-WINNER_FILE_THRESHOLD = 20
 
 global_defaults = {
     "interval": 5,
@@ -112,7 +110,8 @@ class Giveaway:
                      winners: int,
                      guild:discord.Guild=None,
                      roles: List[discord.Role]=None,
-                     join_days: int=None):
+                     join_days: int=None,
+                     update_config=True):
         '''
         Creates a giveaway from the given information along with message
         '''
@@ -134,6 +133,11 @@ class Giveaway:
         message = await channel.send(content=content,
                                      embed=embed)
         giveaway.message = message
+
+        if update_config
+            async with config.guild(guild).giveaways() as giveaways:
+                giveaways.append(giveaway.to_record())
+
         await message.add_reaction("\N{PARTY POPPER}")
         return giveaway
 
@@ -250,7 +254,10 @@ class Giveaway:
         return embed
 
 
-    async def end(self, *, file_threshold:int=20):
+    async def end(self, *, update_config=True):
+        if update_config:
+            async with self.config.guild(self.guild).giveaways() as giveaways:
+                giveaways.remove(self.to_record())
         # Fetch message again to get fresh reactions
         message = await self.channel.fetch_message(self.message.id)
         reaction = discord.utils.get(message.reactions,
@@ -286,6 +293,8 @@ class Giveaway:
                 winner = random.choice(users)
                 users.remove(winner)
                 winners_list.append(winner)
+
+        file_threshold = await self.config.file_threshold()
 
         file = None
         winners_str = ''
@@ -332,15 +341,12 @@ class GiveawayCog(BaseCog, name="Giveaway"):
     @tasks.loop(seconds=5)
     async def giveaway_handler(self):
         now = datetime.datetime.utcnow()
-        file_threshold = await self.db.file_threshold()
 
         for giveaway in self.running_giveaways:
             if giveaway.end_time <= now:
-                async with self.db.guild(giveaway.guild).giveaways() as giveaways:
-                    giveaways.remove(giveaway.to_record())
                 self.running_giveaways.remove(giveaway)
                 try:
-                    await giveaway.end(file_threshold=file_threshold)
+                    await giveaway.end()
                 except discord.errors.NotFound:
                     continue
             else:
@@ -436,10 +442,10 @@ class GiveawayCog(BaseCog, name="Giveaway"):
             await ctx.send('The number of winners could not be less than 1 '
                            'so it was set to 1')
 
-
+        file_threshold = await self.db.file_threshold()
         await ctx.send('What should be the message that is sent at the end of the '
                        'giveaway?\n\nNote: The winners will be mentioned in this '
-                       F'at the end if they are <{WINNER_FILE_THRESHOLD} in number'
+                       F'at the end if they are <{file_threshold} in number'
                        ' otherwise a file with their names will be attached!')
         ending_message = await self.bot.wait_for('message', check=message_check, timeout=60)
         ending_message = ending_message.content
@@ -507,10 +513,10 @@ Times are in UTC.'''
                     commands.clean_content,
                     default='\u2026'
                 ).convert(ctx, end_time.content)
-        # to compensate the computing loss, we add 30 seconds to the end time
+        # to compensate the computing loss, we add 15 seconds to the end time
         # This shouldn't affect long giveaways much but might be great for short
         # ones
-        end_time = end_time.dt + datetime.timedelta(seconds=30)
+        end_time = end_time.dt + datetime.timedelta(seconds=15)
 
 
         giveaway = await Giveaway.create(
@@ -525,11 +531,7 @@ Times are in UTC.'''
             roles=roles,
             join_days=join_days
         )
-
-        async with self.db.guild(ctx.guild).giveaways() as giveaways:
-            giveaways.append(giveaway.to_record())
         self.running_giveaways.append(giveaway)
-
         await ctx.send(f"Successfully created giveaway in {channel.mention}!")
 
 
@@ -582,9 +584,10 @@ Times are in UTC.'''
         if config['ending_message']:
             ending_message = config['ending_message']
         else:
+            file_threshold = await self.db.file_threshold()
             await ctx.send('What should be the message that is sent at the end of the '
                            'giveaway?\n\nNote: The winners will be mentioned in this '
-                           F'at the end if they are <{WINNER_FILE_THRESHOLD} in number'
+                           f'at the end if they are <{file_threshold} in number'
                            ' otherwise a file with their names will be attached!')
             ending_message = await self.bot.wait_for('message', check=message_check, timeout=60)
             ending_message = ending_message.content
@@ -668,10 +671,10 @@ Times are in UTC.'''
                     commands.clean_content,
                     default='\u2026'
                 ).convert(ctx, end_time.content)
-        # to compensate the computing loss, we add 30 seconds to the end time
+        # to compensate the computing loss, we add 15 seconds to the end time
         # This shouldn't affect long giveaways much but might be great for short
         # ones
-        end_time = end_time.dt + datetime.timedelta(seconds=30)
+        end_time = end_time.dt + datetime.timedelta(seconds=15)
 
 
         giveaway = await Giveaway.create(
@@ -686,11 +689,7 @@ Times are in UTC.'''
             roles=roles,
             join_days=join_days
         )
-
-        async with self.db.guild(ctx.guild).giveaways() as giveaways:
-            giveaways.append(giveaway.to_record())
         self.running_giveaways.append(giveaway)
-
         await ctx.send(f"Successfully created giveaway in {channel.mention}!")
 
 
@@ -702,11 +701,8 @@ Times are in UTC.'''
         Pre-maturely ends a giveaway. message can be a jump url to the giveaway message
         """
         giveaway = message
-        file_threshold = await self.db.file_threshold()
         self.running_giveaways.remove(giveaway)
-        async with self.db.guild(ctx.guild).giveaways() as giveaways:
-            giveaways.remove(giveaway.to_record())
-        await giveaway.end(file_threshold=file_threshold)
+        await giveaway.end()
         await ctx.send("Ended that giveaway!")
 
 
@@ -719,7 +715,7 @@ Times are in UTC.'''
             if isinstance(original, GiveawayAborted):
                 await ctx.send("Aborted!")
             else:
-                await ctx.bot.on_command_error(ctx, original, unhandled_by_cog=True)
+                await self.bot.on_command_error(ctx, original, unhandled_by_cog=True)
         elif isinstance(error, asyncio.exceptions.TimeoutError):
             await ctx.send("Timed Out!")
         elif isinstance(error, commands.BadArgument):

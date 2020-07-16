@@ -51,7 +51,7 @@ class Clock(commands.Cog):
         self.update_channels.start()
 
 
-    async def cog_unload(self):
+    def cog_unload(self):
         self.update_channels.stop()
 
 
@@ -60,6 +60,7 @@ class Clock(commands.Cog):
         channels = await self.db.all_channels()
         for channel_id in channels:
             channel = self.bot.get_channel(channel_id)
+            print(channel_id, channel)
             if channel is None:
                 continue
 
@@ -68,7 +69,11 @@ class Clock(commands.Cog):
             fmt = channels[channel_id]["time_format"]
             time = time.strftime(fmt)
 
-            await channel.edit(name=time)
+            if channel.name != time:
+                try:
+                    await channel.edit(name=time)
+                except discord.errors.NotFound:
+                    continue
 
 
     @update_channels.before_loop
