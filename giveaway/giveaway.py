@@ -134,7 +134,7 @@ class Giveaway:
                                      embed=embed)
         giveaway.message = message
 
-        if update_config
+        if update_config:
             async with config.guild(guild).giveaways() as giveaways:
                 giveaways.append(giveaway.to_record())
 
@@ -798,7 +798,7 @@ Ending Message: {config['ending_message']}
 
     @config.command(name="end", aliases=['ending_message', 'endmessage'])
     @checks.mod_or_permissions(manage_guild=True)
-    async def config_end_message(self, ctx, text:str=None):
+    async def config_end_message(self, ctx, *, text:str=None):
         '''
         Set the default ending message
         Run without days to remove the requirement
