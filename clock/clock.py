@@ -1,7 +1,5 @@
 
 # stdlib
-import asyncio
-from typing import Optional
 from datetime import datetime
 
 # discord.py
@@ -13,11 +11,11 @@ from redbot.core import Config, commands, checks
 
 # Current Plugin
 import pytz
-from pytz import all_timezones, country_timezones
+from pytz import all_timezones
 
 
 __author__ = 'AXVin'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 channel_defaults = {
