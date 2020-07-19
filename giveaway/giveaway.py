@@ -139,6 +139,9 @@ class Giveaway:
             async with config.guild(guild).giveaways() as giveaways:
                 giveaways.append(giveaway.to_record())
 
+        # sometimes it doesn't add the reaction coz it's too new
+        # idk, just monkey patching it
+        await asyncio.sleep(0.5)
         await message.add_reaction("\N{PARTY POPPER}")
         return giveaway
 
@@ -275,10 +278,14 @@ class Giveaway:
         now = datetime.datetime.utcnow()
 
         for user in users:
+            if user.bot:
+                users.remove(user)
+                continue
             if self.roles:
                 for role in self.roles:
                     if role not in user.roles:
                         users.remove(user)
+                        continue
 
             if self.join_days:
                 on_server = now - user.joined_at
@@ -911,7 +918,14 @@ Ending Message: {config['ending_message']}
     async def on_raw_reaction_add(self, payload):
         if str(payload.emoji) != "\N{PARTY POPPER}":
             return
-        if payload.guild_id is None:
+
+        guild = self.bot.get_guild(payload.guild_id)
+
+        if guild is None:
+            return
+
+        member = payload.member or guild.get_member(payload.user_id)
+        if member.bot:
             return
 
         giveaway = [giveaway for giveaway in self.running_giveaways if giveaway.message.id == payload.message_id]
@@ -919,8 +933,7 @@ Ending Message: {config['ending_message']}
             return
 
         giveaway = giveaway[0]
-        member = payload.member or giveaway.guild.get_member(payload.user_id)
-            
+
         if giveaway.roles:
             for role in giveaway.roles:
                 if role not in member.roles:
