@@ -217,7 +217,7 @@ class Giveaway:
 
         if winners is not None:
             embed.color = 0xffffff
-            if type(winners) == list:
+            if isinstance(winners, list):
                 winners_list = [str(user.mention) for user in winners]
                 winners_str = human_join(winners_list, final='and')
             else:
@@ -270,10 +270,13 @@ class Giveaway:
             return
 
         users = await reaction.users().flatten()
-        try:
-            users.remove(self.guild.me)
-        except ValueError:
-            pass
+
+        # This will let the bot win if no one entered the giveaway ;(
+        if len(users) > 1:
+            try:
+                users.remove(self.guild.me)
+            except ValueError:
+                pass
 
         now = datetime.datetime.utcnow()
 
