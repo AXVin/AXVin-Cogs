@@ -94,7 +94,7 @@ class Clock(commands.Cog):
         await self.db.channel(channel).timezone.set(timezone)
         if format:
             await self.db.channel(channel).time_format.set(format)
-        await ctx.send(f"Successfully created a channel with **{tz}** timezone"
+        await ctx.send(f"Successfully created a channel with **{timezone}** timezone"
                        ". It should be resolved on next cycle(5 minutes)")
 
 
