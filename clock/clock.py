@@ -15,7 +15,7 @@ from pytz import all_timezones
 
 
 __author__ = 'AXVin'
-__version__ = '1.0.1'
+__version__ = '1.0.3'
 
 
 channel_defaults = {
@@ -58,9 +58,11 @@ class Clock(commands.Cog):
             time = channels[channel_id]["timezone"]
             time = datetime.now(pytz.timezone(time))
             fmt = channels[channel_id]["time_format"]
-            time = time.strftime(fmt)
-
-            await channel.edit(name=time)
+            try:
+                time = time.strftime(fmt)
+                await channel.edit(name=time)
+            except:
+                continue
 
 
     @update_channels.before_loop
@@ -86,8 +88,14 @@ class Clock(commands.Cog):
         For timezone, check out: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
         For format, check out: https://strftime.org. Default is "%A, %I:%M %p (%Z)"
         """
+        time = datetime.now(pytz.timezone(timezone))
         try:
-            channel = await ctx.guild.create_voice_channel(name=timezone)
+            time = time.strftime(format)
+        except ValueError:
+            return await ctx.send("That is an invalid format! "
+                                  "Please only use variable from https://strftime.org")
+        try:
+            channel = await ctx.guild.create_voice_channel(name=time)
         except Exception as e:
             await ctx.send(e)
             return
