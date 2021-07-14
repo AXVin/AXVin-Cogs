@@ -19,5 +19,5 @@ The public cogs for Red v3. Most of these cogs are from bounties that i complete
 
 ### Supporting the Development
 You can help me keep maintaining these bots by sponsoring this projects.
-Use any of the options of the sponsor tab. Thank you for your help. Much appreciated!!
+Use any of the options of the sponsor tab. Thank you for your help. Much appreciated!
 
