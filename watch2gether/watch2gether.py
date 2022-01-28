@@ -110,16 +110,16 @@ class Watch2Gether(BaseCog):
                         if pred.result == 1:
                             return await message.delete()
 
-        url = "https://www.watch2gether.com/rooms/create.json"
+        url = "https://w2g.tv/rooms/create.json"
         data = {
-            "api_key": api_key,
+            "w2g_api_key": api_key,
             "share": link
         }
         async with self.session.post(url, data=data) as resp:
             jsondata = await resp.json()
 
         room_key = jsondata["streamkey"]
-        room_url = f"https://www.watch2gether.com/rooms/{room_key}"
+        room_url = f"https://w2g.tv/rooms/{room_key}"
         async with self.db.guild(ctx.guild).rooms() as rooms:
             rooms.append({
                 "room_key": room_key,
